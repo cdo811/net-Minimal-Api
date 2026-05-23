@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using Microsoft.Data.SqlClient;
 using New_folder;
 
@@ -8,6 +9,42 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHostedService<KafkaConsumerService>();
 
 var app = builder.Build();
+
+// ----- Admin Client to create the topic on startup -----
+using (var scope = app.Services.CreateScope())
+{
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    var adminConfig = new AdminClientConfig { BootstrapServers = config["Kafka:BootstrapServers"] ?? "localhost:9092" };
+
+    try
+    {
+        using var adminClient = new AdminClientBuilder(adminConfig).Build();
+        
+        // Check if topic exists
+        var metadata = adminClient.GetMetadata(TimeSpan.FromSeconds(10));
+        var topicExists = metadata.Topics.Any(t => t.Topic == "csv-data");
+
+        if (!topicExists)
+        {
+            Console.WriteLine("Topic 'csv-data' does not exist. Creating it now...");
+            await adminClient.CreateTopicsAsync(new[]
+            {
+                new TopicSpecification { Name = "csv-data", ReplicationFactor = 1, NumPartitions = 1 }
+            });
+            Console.WriteLine("Topic 'csv-data' created successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Topic 'csv-data' already exists.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred while ensuring the topic exists: {ex.Message}");
+    }
+}
+// -------------------------------------------------------
+
 
 app.MapGet("/", () => "Hello World! This is the API for processing CSV files with Kafka.");
 
@@ -19,7 +56,7 @@ app.MapPost("/upload", async (IFormFile file, IConfiguration config) =>
 
         var producerConfig = new ProducerConfig
         {
-            BootstrapServers = config["Kafka:BootstrapServers"]
+            BootstrapServers = config["Kafka:BootstrapServers"] ?? "localhost:9092"
         };
 
         using var producer = new ProducerBuilder<Null, string>(producerConfig).Build();
@@ -41,7 +78,7 @@ app.MapPost("/upload", async (IFormFile file, IConfiguration config) =>
             try
             {
                 // Produce the CSV line to the 'csv-data' topic
-                await producer.ProduceAsync("csv-data", new Message<Null, string> { Value = line });
+                producer.Produce("csv-data", new Message<Null, string> { Value = line });
                 lineCount++;
             }
             catch (ProduceException<Null, string> e)
