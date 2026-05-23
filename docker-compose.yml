@@ -1,0 +1,31 @@
+﻿version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_HTTP_PORTS=8080
+      # Connects to the 'db' container. Note the TrustServerCertificate=True for local dev.
+      - ConnectionStrings__DefaultConnection=Server=db;Database=master;User Id=sa;Password=StrongPassword123!;TrustServerCertificate=True;
+    depends_on:
+      - db
+
+  db:
+    # Changed from mssql/server:2022-latest to azure-sql-edge to support ARM64 processors natively
+    image: mcr.microsoft.com/azure-sql-edge
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=StrongPassword123!
+    volumes:
+      # Maps the named volume to the SQL Server data directory
+      - sql_data:/var/opt/mssql
+
+# Declare the named volume
+volumes:
+  sql_data:
