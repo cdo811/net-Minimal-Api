@@ -5,12 +5,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: build # Target the build stage which has the SDK
     ports:
       - "8080:8080"
+    volumes:
+      - .:/src # Mount source code to the build stage's WORKDIR
+    # Override the command to use dotnet watch for hot reload
+    command: dotnet watch run --project ./test.csproj --urls "http://0.0.0.0:8080"
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__DefaultConnection=Server=db;Database=master;User Id=sa;Password=StrongPassword123!;TrustServerCertificate=True;
       - Kafka__BootstrapServers=kafka:29092
+      - DOTNET_USE_POLLING_FILE_WATCHER=1 # For file watching in Docker
     depends_on:
       - db
       - kafka
@@ -46,6 +52,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
