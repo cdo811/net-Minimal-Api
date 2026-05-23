@@ -9,13 +9,13 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
-      # Connects to the 'db' container. Note the TrustServerCertificate=True for local dev.
       - ConnectionStrings__DefaultConnection=Server=db;Database=master;User Id=sa;Password=StrongPassword123!;TrustServerCertificate=True;
+      - Kafka__BootstrapServers=kafka:29092
     depends_on:
       - db
+      - kafka
 
   db:
-    # Changed from mssql/server:2022-latest to azure-sql-edge to support ARM64 processors natively
     image: mcr.microsoft.com/azure-sql-edge
     ports:
       - "1433:1433"
@@ -23,9 +23,40 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=StrongPassword123!
     volumes:
-      # Maps the named volume to the SQL Server data directory
       - sql_data:/var/opt/mssql
 
-# Declare the named volume
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8081:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    depends_on:
+      - kafka
+
 volumes:
   sql_data:

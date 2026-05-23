@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1sWYeN5CaOM=",
+  "dgSpecHash": "5R+jLzqUyWQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\Cesar De la O\\OneDrive\\Escritorio\\New folder\\test.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Cesar De la O\\.nuget\\packages\\confluent.kafka\\2.4.0\\confluent.kafka.2.4.0.nupkg.sha512",
+    "C:\\Users\\Cesar De la O\\.nuget\\packages\\librdkafka.redist\\2.4.0\\librdkafka.redist.2.4.0.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\microsoft.bcl.cryptography\\9.0.13\\microsoft.bcl.cryptography.9.0.13.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\microsoft.data.sqlclient\\7.0.1\\microsoft.data.sqlclient.7.0.1.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\microsoft.data.sqlclient.extensions.abstractions\\1.0.0\\microsoft.data.sqlclient.extensions.abstractions.1.0.0.nupkg.sha512",

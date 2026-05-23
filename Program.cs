@@ -1,51 +1,61 @@
+using Confluent.Kafka;
 using Microsoft.Data.SqlClient;
+using New_folder;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add the Kafka consumer as a hosted service
+builder.Services.AddHostedService<KafkaConsumerService>();
+
 var app = builder.Build();
 
-app.MapGet("/", () => "hello world");
+app.MapGet("/", () => "Hello World! This is the API for processing CSV files with Kafka.");
 
+// This endpoint now produces messages to a Kafka topic
 app.MapPost("/upload", async (IFormFile file, IConfiguration config) =>
     {
         if (file == null || file.Length == 0)
             return Results.BadRequest("No file uploaded.");
 
-        var connectionString = config.GetConnectionString("DefaultConnection");
+        var producerConfig = new ProducerConfig
+        {
+            BootstrapServers = config["Kafka:BootstrapServers"]
+        };
 
-        using var stream = file.OpenReadStream();
-        using var reader = new StreamReader(stream);
-    
-        // Read and skip the header row
+        using var producer = new ProducerBuilder<Null, string>(producerConfig).Build();
+        using var reader = new StreamReader(file.OpenReadStream());
+
+        // Skip header row
         var header = await reader.ReadLineAsync();
+        if (header == null)
+        {
+            return Results.BadRequest("Empty file or invalid CSV format.");
+        }
 
-        await using var connection = new SqlConnection(connectionString);
-        await connection.OpenAsync();
-
-        // Create the table if it doesn't exist yet
-        var createTableCmd = new SqlCommand(@"
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
-        CREATE TABLE Users (Name NVARCHAR(100), Age INT)", connection);
-        await createTableCmd.ExecuteNonQueryAsync();
-
-        // Loop through the CSV lines
-        // Note: For very large CSVs in production, use SqlBulkCopy instead of looping INSERTS.
+        var lineCount = 0;
         while (!reader.EndOfStream)
         {
             var line = await reader.ReadLineAsync();
             if (string.IsNullOrWhiteSpace(line)) continue;
 
-            var values = line.Split(',');
-
-            using var command = new SqlCommand("INSERT INTO Users (Name, Age) VALUES (@Name, @Age)", connection);
-            command.Parameters.AddWithValue("@Name", values[0].Trim());
-            command.Parameters.AddWithValue("@Age", int.Parse(values[1].Trim()));
-        
-            await command.ExecuteNonQueryAsync();
+            try
+            {
+                // Produce the CSV line to the 'csv-data' topic
+                await producer.ProduceAsync("csv-data", new Message<Null, string> { Value = line });
+                lineCount++;
+            }
+            catch (ProduceException<Null, string> e)
+            {
+                Console.WriteLine($"Delivery failed: {e.Error.Reason}");
+                // Optionally, return an error to the client
+                return Results.Problem($"Failed to produce message to Kafka: {e.Error.Reason}");
+            }
         }
 
-        return Results.Ok("CSV uploaded and data saved to SQL Server.");
+        producer.Flush(TimeSpan.FromSeconds(10));
+        return Results.Ok($"{lineCount} lines from the CSV have been queued for processing via Kafka.");
     })
-    .DisableAntiforgery(); // Disables CSRF tokens so you can test easily via Postman or cURL
+    .DisableAntiforgery();
 
 
 app.Run();
