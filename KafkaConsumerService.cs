@@ -22,31 +22,7 @@ public class KafkaConsumerService(ILogger<KafkaConsumerService> logger, IConfigu
 
         var connectionString = config.GetConnectionString("DefaultConnection");
 
-        // Ensure the table exists before starting the consumer loop.
-        try
-        {
-            await using var initialConnection = new SqlConnection(connectionString);
-            await initialConnection.OpenAsync(stoppingToken);
-            var createTableCmd = new SqlCommand(@"
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Customers' AND xtype='U')
-                CREATE TABLE Customers (
-                    CustomerID INT PRIMARY KEY,
-                    Gender VARCHAR(10),
-                    Age INT,
-                    AnnualIncome INT,
-                    SpendingScore INT,
-                    Profession VARCHAR(50),
-                    WorkExperience INT,
-                    FamilySize INT
-                );", initialConnection);
-            await createTableCmd.ExecuteNonQueryAsync(stoppingToken);
-            logger.LogInformation("Successfully ensured 'Customers' table exists.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error ensuring database table exists. The consumer will not start.");
-            return; // Stop execution if we can't connect to the DB or create the table.
-        }
+ 
 
 
         while (!stoppingToken.IsCancellationRequested)
@@ -58,7 +34,8 @@ public class KafkaConsumerService(ILogger<KafkaConsumerService> logger, IConfigu
                 logger.LogInformation($"Consumed message: {csvLine}");
 
                 var values = csvLine.Split(',');
-                if (values.Length != 8)
+                logger.LogWarning($" {values.Length}");
+                if (values.Length != 7)
                 {
                     logger.LogWarning($"Skipping invalid CSV line: {csvLine}");
                     continue;
@@ -68,18 +45,17 @@ public class KafkaConsumerService(ILogger<KafkaConsumerService> logger, IConfigu
                 await connection.OpenAsync(stoppingToken);
 
                 using var command = new SqlCommand(
-                    "INSERT INTO Customers (CustomerID, Gender, Age, AnnualIncome, SpendingScore, Profession, WorkExperience, FamilySize) " +
-                    "VALUES (@CustomerID, @Gender, @Age, @AnnualIncome, @SpendingScore, @Profession, @WorkExperience, @FamilySize)",
+                    "INSERT INTO Customers ( Gender, Age, AnnualIncome, SpendingScore, Profession, WorkExperience, FamilySize) " +
+                    "VALUES ( @Gender, @Age, @AnnualIncome, @SpendingScore, @Profession, @WorkExperience, @FamilySize)",
                     connection);
 
-                command.Parameters.AddWithValue("@CustomerID", int.Parse(values[0].Trim()));
-                command.Parameters.AddWithValue("@Gender", values[1].Trim());
-                command.Parameters.AddWithValue("@Age", int.Parse(values[2].Trim()));
-                command.Parameters.AddWithValue("@AnnualIncome", int.Parse(values[3].Trim()));
-                command.Parameters.AddWithValue("@SpendingScore", int.Parse(values[4].Trim()));
-                command.Parameters.AddWithValue("@Profession", values[5].Trim());
-                command.Parameters.AddWithValue("@WorkExperience", int.Parse(values[6].Trim()));
-                command.Parameters.AddWithValue("@FamilySize", int.Parse(values[7].Trim()));
+                command.Parameters.AddWithValue("@Gender", values[0].Trim());
+                command.Parameters.AddWithValue("@Age", int.Parse(values[1].Trim()));
+                command.Parameters.AddWithValue("@AnnualIncome", int.Parse(values[2].Trim()));
+                command.Parameters.AddWithValue("@SpendingScore", int.Parse(values[3].Trim()));
+                command.Parameters.AddWithValue("@Profession", values[4].Trim());
+                command.Parameters.AddWithValue("@WorkExperience", int.Parse(values[5].Trim()));
+                command.Parameters.AddWithValue("@FamilySize", int.Parse(values[6].Trim()));
 
                 await command.ExecuteNonQueryAsync(stoppingToken);
                 logger.LogInformation($"Successfully inserted CustomerID {values[0]} into the database.");

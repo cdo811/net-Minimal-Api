@@ -1,0 +1,64 @@
+﻿# ==================================
+# .NET Build Outputs
+# ==================================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+TestResults/
+
+# ==================================
+# NuGet Packages
+# ==================================
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# ==================================
+# JetBrains Rider
+# ==================================
+.idea/
+*.sln.iml
+*.csproj.iml
+*.[Dd]ot[Ss]ettings.user
+
+# ==================================
+# Visual Studio & VS Code
+# ==================================
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.vssscc
+
+# ==================================
+# Local Configurations & Secrets
+# ==================================
+# Ignore local development overrides (optional but recommended)
+appsettings.Development.json
+appsettings.Local.json
+.env
+*.userprefs
+
+# ==================================
+# OS Generated Files
+# ==================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
