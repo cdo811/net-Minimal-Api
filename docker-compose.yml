@@ -1,4 +1,4 @@
-﻿version: '3.8'
+version: '3.8'
 
 services:
   api:
@@ -64,6 +64,60 @@ services:
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
     depends_on:
       - kafka
+
+  fastapi_service:
+    build:
+      context: ./fastapi_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fastapi_service:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SQL_SERVER_CONN=mssql+pymssql://sa:StrongPassword123!@db/master
+      - POSTGRES_CONN=postgresql+psycopg2://postgres:postgres@postgres/postgres
+    depends_on:
+      - db
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+
+  elasticsearch:
+    image: elasticsearch:8.11.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana:8.11.1
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
 
 volumes:
   sql_data:

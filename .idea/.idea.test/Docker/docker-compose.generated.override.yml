@@ -16,6 +16,6 @@ services:
     ports: []
     volumes:
     - "C:\\Users\\Cesar De la O\\OneDrive\\Escritorio\\New folder:/app:rw"
-    - "C:\\Users\\Cesar De la O\\OneDrive\\Escritorio\\New folder:/src:rw"
+    - "C:\\Users\\Cesar De la O\\OneDrive\\Escritorio\\New folder:/src-1:rw"
     - "C:\\Users\\Cesar De la O\\.nuget\\packages:/root/.nuget/packages"
     working_dir: "/app"

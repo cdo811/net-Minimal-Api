@@ -34,7 +34,7 @@ public class KafkaConsumerService(ILogger<KafkaConsumerService> logger, IConfigu
                 logger.LogInformation($"Consumed message: {csvLine}");
 
                 var values = csvLine.Split(',');
-                logger.LogWarning($" {values.Length}");
+               
                 if (values.Length != 7)
                 {
                     logger.LogWarning($"Skipping invalid CSV line: {csvLine}");

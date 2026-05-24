@@ -57,6 +57,14 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[7.0.1, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Elasticsearch": {
+              "target": "Package",
+              "version": "[10.0.0, )"
             }
           },
           "imports": [
