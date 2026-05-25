@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "Ar5jT0EO7oE=",
+  "dgSpecHash": "j/8sdlLN1GU=",
   "success": true,
   "projectFilePath": "C:\\Users\\Cesar De la O\\OneDrive\\Escritorio\\New folder\\test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\confluent.kafka\\2.4.0\\confluent.kafka.2.4.0.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\elasticsearch.net\\7.17.5\\elasticsearch.net.7.17.5.nupkg.sha512",
+    "C:\\Users\\Cesar De la O\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
+    "C:\\Users\\Cesar De la O\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\12.1.1\\fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\librdkafka.redist\\2.4.0\\librdkafka.redist.2.4.0.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\microsoft.bcl.cryptography\\9.0.13\\microsoft.bcl.cryptography.9.0.13.nupkg.sha512",
     "C:\\Users\\Cesar De la O\\.nuget\\packages\\microsoft.data.sqlclient\\7.0.1\\microsoft.data.sqlclient.7.0.1.nupkg.sha512",

@@ -4,8 +4,10 @@ using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using Microsoft.Data.SqlClient;
 using New_folder;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddValidatorsFromAssemblyContaining<New_folder.Models.CustomerDtoValidator>();
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -122,8 +124,14 @@ app.MapPost("/upload", async (IFormFile file, IConfiguration config) =>
     })
     .DisableAntiforgery();
 
-app.MapPost("/customer", async (New_folder.Models.CustomerDto customer, IConfiguration config) =>
+app.MapPost("/customer", async (New_folder.Models.CustomerDto customer, IValidator<New_folder.Models.CustomerDto> validator, IConfiguration config) =>
 {
+    var validationResult = await validator.ValidateAsync(customer);
+    if (!validationResult.IsValid)
+    {
+        return Results.ValidationProblem(validationResult.ToDictionary());
+    }
+
     var producerConfig = new ProducerConfig
     {
         BootstrapServers = config["Kafka:BootstrapServers"] ?? "localhost:9092"
