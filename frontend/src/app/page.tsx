@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import styles from './page.module.css';
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function CustomerForm() {
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     Gender: 'Male',
     Age: '',
@@ -101,11 +103,49 @@ export default function CustomerForm() {
     }
   };
 
+  if (status === "loading") {
+    return (
+      <main className={styles.main}>
+        <div className={styles.formContainer} style={{ textAlign: 'center' }}>
+          <p>Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!session) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.formContainer} style={{ textAlign: 'center' }}>
+          <h1 className={styles.title}>Welcome</h1>
+          <p className={styles.subtitle}>Please sign in to access the customer pipeline.</p>
+          <button 
+            onClick={() => signIn('google')} 
+            className={styles.submitBtn}
+            style={{ marginTop: '2rem' }}
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.formContainer}>
-        <h1 className={styles.title}>Load Customer</h1>
-        <p className={styles.subtitle}>Enter the individual customer details below</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div>
+            <h1 className={styles.title}>Load Customer</h1>
+            <p className={styles.subtitle}>Signed in as {session.user?.email}</p>
+          </div>
+          <button 
+            onClick={() => signOut()} 
+            style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer' }}
+          >
+            Sign Out
+          </button>
+        </div>
         
         <form onSubmit={handleSubmit}>
           <div className={styles.grid}>

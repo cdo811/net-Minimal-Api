@@ -1,5 +1,18 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Variables
+
+Before running the application, you need to configure your environment variables. Create a `.env.local` file in the root of the `frontend` directory and add the following template:
+
+```env
+GOOGLE_CLIENT_ID="your_google_client_id_here"
+GOOGLE_CLIENT_SECRET="your_google_client_secret_here"
+NEXTAUTH_SECRET="a_random_secret_string"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+Replace `your_google_client_id_here` and `your_google_client_secret_here` with your actual Google OAuth credentials.
+
 ## Getting Started
 
 First, run the development server:
