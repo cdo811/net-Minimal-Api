@@ -18,7 +18,7 @@ export default function CustomerForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const sendLog = async (level: string, message: string, meta: any = {}) => {
+  const sendLog = async (level: string, message: string, meta: Record<string, unknown> = {}) => {
     try {
       await fetch('/api/logs', {
         method: 'POST',
@@ -70,6 +70,34 @@ export default function CustomerForm() {
       await sendLog('error', 'Error submitting customer request', { error: String(error) });
       console.error('Error submitting customer:', error);
       alert('An error occurred. Make sure the API is running.');
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+    
+    try {
+      const response = await fetch('http://localhost:8080/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const msg = await response.text();
+        await sendLog('info', 'CSV uploaded successfully', { message: msg });
+        alert(`Upload successful: ${msg}`);
+      } else {
+        await sendLog('error', 'Failed to upload CSV', { status: response.status });
+        alert('Failed to upload CSV. Please check the console.');
+      }
+    } catch (error) {
+      await sendLog('error', 'Error uploading file', { error: String(error) });
+      console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file.');
     }
   };
 
@@ -177,9 +205,16 @@ export default function CustomerForm() {
             
           </div>
           
-          <button type="submit" className={styles.submitBtn}>
-            Load Customer
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '2rem' }}>
+            <button type="submit" className={styles.submitBtn} style={{ marginTop: 0 }}>
+              Load Customer
+            </button>
+            <div style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>OR</div>
+            <label className={styles.secondaryBtn}>
+              Upload CSV File
+              <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleFileUpload} />
+            </label>
+          </div>
         </form>
       </div>
     </main>
