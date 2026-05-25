@@ -3,14 +3,14 @@ version: '3.8'
 services:
   api:
     build:
-      context: .
+      context: ./minimal-net-api
       dockerfile: Dockerfile
       target: build # Target the build stage which has the SDK
       no_cache: true
     ports:
       - "8080:8080"
     volumes:
-      - .:/src # Mount source code to the build stage's WORKDIR
+      - ./minimal-net-api:/src # Mount source code to the build stage's WORKDIR
     # Override the command to use dotnet watch for hot reload
     command: dotnet watch run --project ./test.csproj --urls "http://0.0.0.0:8080"
     environment:
