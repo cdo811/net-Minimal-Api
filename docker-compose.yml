@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: build # Target the build stage which has the SDK
+      no_cache: true
     ports:
       - "8080:8080"
     volumes:
@@ -14,6 +15,7 @@ services:
     command: dotnet watch run --project ./test.csproj --urls "http://0.0.0.0:8080"
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
+      - DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER=1
       - ConnectionStrings__DefaultConnection=Server=db;Database=master;User Id=sa;Password=StrongPassword123!;TrustServerCertificate=True;
       - Kafka__BootstrapServers=kafka:29092
       - DOTNET_USE_POLLING_FILE_WATCHER=1 # For file watching in Docker
@@ -69,10 +71,9 @@ services:
     build:
       context: ./fastapi_service
       dockerfile: Dockerfile
+      no_cache: true
     ports:
       - "8000:8000"
-    volumes:
-      - ./fastapi_service:/app
     environment:
       - PYTHONUNBUFFERED=1
       - SQL_SERVER_CONN=mssql+pymssql://sa:StrongPassword123!@db/master
@@ -85,14 +86,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      no_cache: true
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
     environment:
       - NODE_ENV=development
+      - HOSTNAME=0.0.0.0
+    env_file:
+      - ./frontend/.env.local
 
   elasticsearch:
     image: elasticsearch:8.11.1
