@@ -1,0 +1,28 @@
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\appsettings.Development.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\appsettings.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.staticwebassets.endpoints.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.exe
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.deps.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.runtimeconfig.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.dll
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\bin\Debug\net10.0\New folder.pdb
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.AssemblyInfoInputs.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.AssemblyInfo.cs
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.csproj.CoreCompileInputs.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\scopedcss\bundle\New folder.styles.css
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\staticwebassets.development.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\swae.build.ex.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.dll
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\refint\New folder.dll
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.pdb
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\New folder.genruntimeconfig.cache
+C:\Users\Cesar De la O\OneDrive\Escritorio\New folder\obj\Debug\net10.0\ref\New folder.dll
